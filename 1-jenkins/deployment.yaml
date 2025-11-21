@@ -22,14 +22,20 @@ spec:
         volumeMounts:
         - name: jenkins-data
           mountPath: /var/jenkins_home
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        securityContext:
+          privileged: true  # ← ADD THIS
         resources:
           requests:
-            memory: "512Mi"    # Reduced for t3.small
-            cpu: "250m"
-          limits:
-            memory: "1Gi"      # Reduced for t3.small
+            memory: "1Gi"
             cpu: "500m"
+          limits:
+            memory: "2Gi" 
+            cpu: "1000m"
       volumes:
       - name: jenkins-data
-        emptyDir: {}           # Use emptyDir instead of PVC
-      # REMOVED: docker-sock volume (not needed with Kaniko)
+        emptyDir: {}
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
