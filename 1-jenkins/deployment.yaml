@@ -22,6 +22,8 @@ spec:
         volumeMounts:
         - name: jenkins-data
           mountPath: /var/jenkins_home
+        - name: docker-sock                    # ← ADD THIS LINE
+          mountPath: /var/run/docker.sock      # ← ADD THIS LINE
         resources:
           requests:
             memory: "1Gi"
@@ -33,3 +35,7 @@ spec:
       - name: jenkins-data
         persistentVolumeClaim:
           claimName: jenkins-pvc
+      - name: docker-sock                      # ← ADD THIS LINE
+        hostPath:                              # ← ADD THIS LINE
+          path: /var/run/docker.sock           # ← ADD THIS LINE
+                        
