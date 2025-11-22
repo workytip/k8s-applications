@@ -14,28 +14,27 @@ spec:
         app: jenkins
     spec:
       serviceAccountName: jenkins
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: jenkins
         image: jenkins/jenkins:lts
+        # REMOVE the command/args section - no Docker installation
         ports:
         - containerPort: 8080
         - containerPort: 50000
         volumeMounts:
         - name: jenkins-data
           mountPath: /var/jenkins_home
-        - name: docker-sock
-          mountPath: /var/run/docker.sock
+        # REMOVE docker-sock mount - we'll use Kaniko instead
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "1Gi"
+            memory: "512Mi"
             cpu: "500m"
       volumes:
       - name: jenkins-data
-        persistentVolumeClaim:
-          claimName: jenkins-pvc  # Use PVC for persistence
-      - name: docker-sock
-        hostPath:
-          path: /var/run/docker.sock
+        emptyDir: {}
+      # REMOVE docker-sock volume
